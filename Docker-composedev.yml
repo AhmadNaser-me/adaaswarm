@@ -11,6 +11,17 @@ services:
       - MYSQL_DATABASE=adaa_dev_new
     ports:
       - "3306:3306"
+    deploy:
+      replicas: 2
+      placement:
+        max_replicas_per_node: 1
+      update_config:
+        parallelism: 1
+        delay: 120s
+        order: stop-first
+      restart_policy:
+        condition: on-failure
+        delay: 120s
   #-----------------------------------------------------------------------
   adaabakdev:
     image: adaabakdev
@@ -29,15 +40,17 @@ services:
       - mysqldev
     depends_on:
       - mysqldev
-   # deploy:
-    # replicas: 4
-     #placement:
-      #max_replicas_per_node: 1
-    # update_config:
-     # parallelism: 2 
-      #delay: 10s
-    # restart_policy:
-     # condition: on-failure
+    deploy:
+      replicas: 2
+      placement:
+        max_replicas_per_node: 1
+      update_config:
+        parallelism: 1
+        delay: 120s
+        order: stop-first
+      restart_policy:
+        condition: on-failure
+        delay: 120s
   #-----------------------------------------------------------------------------------
   adaafe:
     image: adaafe
@@ -52,3 +65,15 @@ services:
     depends_on:
       - mysqldev
       - adaabakdev
+
+    deploy:
+      replicas: 2
+      placement:
+        max_replicas_per_node: 1
+      update_config:
+        parallelism: 1
+        delay: 120s
+        order: stop-first
+      restart_policy:
+        condition: on-failure
+        delay: 120s
