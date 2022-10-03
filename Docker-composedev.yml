@@ -1,0 +1,54 @@
+version: "3.8"
+services:
+  #---------------------------------------------------------------------
+  mysqldev:
+    image: mysqldev
+    build: /adaaswarm/data
+    container_name: databasseadaa
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=adaa_dev_new
+    ports:
+      - "3306:3306"
+  #-----------------------------------------------------------------------
+  adaabakdev:
+    image: adaabakdev
+    build: /adaaswarm/Adaa
+    container_name: adaabakdev
+    working_dir: /src/app
+    environment:
+      DB_HOST: mysqldev
+      DB_PORT: 3306
+      DB_NAME: adaa_dev_new
+      DB_USER: adaa_deve_new
+      DP_PASS: adaa_deve_new
+    ports:
+      - "9007:9007"
+    links:
+      - mysqldev
+    depends_on:
+      - mysqldev
+   # deploy:
+    # replicas: 4
+     #placement:
+      #max_replicas_per_node: 1
+    # update_config:
+     # parallelism: 2 
+      #delay: 10s
+    # restart_policy:
+     # condition: on-failure
+  #-----------------------------------------------------------------------------------
+  adaafe:
+    image: adaafe
+    build: /adaaswarm/AdaaFE
+    container_name: adaafe
+    working_dir: /usr/share/nginx/html
+    ports:
+      - "80:80"
+    links:
+      - mysqldev
+      - adaabakdev
+    depends_on:
+      - mysqldev
+      - adaabakdev
